@@ -1,7 +1,141 @@
-<header>
-    <div>
-        <a>
-            Header
+---
+interface Props {
+  // puede ser string ("/assets/logo.png") o un objeto importado desde src/assets
+  logoSrc?: any;
+  logoAlt?: string;
+}
+
+const { logoSrc, logoAlt = "Logo" } = Astro.props;
+
+// si es string, úsalo tal cual; si es objeto, usa .src
+const resolvedLogoSrc =
+  typeof logoSrc === "string" ? logoSrc : logoSrc?.src ?? undefined;
+
+const navItems = [
+  { label: "Inicio", href: "#inicio" },
+  { label: "Detalles", href: "#detalles" },
+  { label: "Speakers", href: "#speakers" },
+  { label: "Equipo", href: "#equipo" },
+  { label: "Sponsors", href: "#sponsors" },
+];
+---
+
+<header class="nav-bar">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href="#inicio" class="logo-link">
+      {resolvedLogoSrc ? (
+        <img src={resolvedLogoSrc} alt={logoAlt} />
+      ) : (
+        <span class="logo-text">DevFest Cochabamba 2025</span>
+      )}
+    </a>
+
+    <!-- Menú -->
+    <nav class="nav-menu">
+      {navItems.map((item) => (
+        <a href={item.href} class="nav-link">
+          {item.label}
         </a>
-    </div>
+      ))}
+    </nav>
+
+    <!-- Botón -->
+    <a href="#registro" class="cta-button">
+      Inscríbete
+    </a>
+  </div>
 </header>
+
+<style>
+  .nav-bar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #f3f4f6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .logo-link img {
+    height: 36px;
+    width: auto;
+    display: block;
+  }
+
+  .logo-text {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 2rem;
+    margin-left: auto;
+    margin-right: 2rem;
+  }
+
+  .nav-link {
+    font-size: 0.95rem;
+    color: #111827;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .nav-link:nth-child(1) {
+    color: #111827;
+  }
+
+  .nav-link:hover {
+    color: #4285f4;
+  }
+
+  .cta-button {
+    padding: 0.6rem 1.3rem;
+    border-radius: 10px;
+    background-color: #4285f4;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+
+  .cta-button:hover {
+    background-color: #4285f4;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    .nav-inner {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-menu {
+      margin: 0;
+      gap: 1rem;
+    }
+
+    .cta-button {
+      margin-top: 0.5rem;
+    }
+  }
+</style>
