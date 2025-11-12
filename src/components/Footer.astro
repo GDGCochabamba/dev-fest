@@ -1,1 +1,116 @@
-<div></div>
+---
+interface Props {
+  instagramLogoSrc?: any;
+  logoAlt?: string;
+  youtubeLogoSrc?: any;
+}
+
+const { instagramLogoSrc, logoAlt = "Logo", youtubeLogoSrc } = Astro.props;
+
+const resolveImg = (img: any) =>
+  typeof img === "string" ? img : (img?.src ?? undefined);
+
+const instagramLogo = resolveImg(instagramLogoSrc);
+const youtubeLogo = resolveImg(youtubeLogoSrc);
+---
+
+<div style="min-height: 100vh; display: flex; flex-direction: column;">
+  <footer class="footer" style="margin-top: auto;">
+    <h2 class="footer-title">Síguenos en nuestras redes sociales</h2>
+    <p class="footer-text">
+      No te pierdas las últimas noticias y actualizaciones.
+    </p>
+
+    <div class="social-links">
+      <a href="https://www.instagram.com/gdgcochabamba" class="social-icon">
+        {
+          instagramLogo ? (
+            <img class="icon" src={instagramLogo} alt={logoAlt} />
+          ) : (
+            <span class="logo-text">Instagram</span>
+          )
+        }
+      </a>
+
+      <a href="https://www.youtube.com/@GDGCochabamba" class="social-icon">
+        {
+          youtubeLogo ? (
+            <img class="icon" src={youtubeLogo} alt="YouTube" />
+          ) : (
+            <span class="logo-text">YouTube</span>
+          )
+        }
+      </a>
+    </div>
+  </footer>
+</div>
+
+<style>
+  .footer {
+    background-color: rgba(255, 255, 255, 1);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .footer-title {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: rgba(16, 24, 40, 1);
+  }
+
+  .footer-text {
+    font-size: 24px;
+    color: rgba(30, 30, 30, 1);
+  }
+
+  .social-links {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .icon {
+    width: 44px;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    .footer {
+      padding: 1.5rem 1rem;
+    }
+
+    .footer-title {
+      font-size: 32px;
+    }
+
+    .footer-text {
+      font-size: 18px;
+    }
+
+    .icon {
+      width: 55px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer-title {
+      font-size: 26px;
+    }
+
+    .footer-text {
+      font-size: 16px;
+    }
+
+    .icon {
+      width: 42px;
+    }
+
+    .social-links {
+      gap: 1rem;
+    }
+  }
+</style>
