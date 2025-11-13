@@ -1,1 +1,47 @@
-<div></div>
+---
+import '../styles/footer.css';
+interface Props {
+  instagramLogoSrc?: any;
+  logoAlt?: string;
+  youtubeLogoSrc?: any;
+}
+
+const { instagramLogoSrc, logoAlt = "Logo", youtubeLogoSrc } = Astro.props;
+
+const resolveImg = (img: any) =>
+  typeof img === "string" ? img : (img?.src ?? undefined);
+
+const instagramLogo = resolveImg(instagramLogoSrc);
+const youtubeLogo = resolveImg(youtubeLogoSrc);
+---
+
+<div>
+  <footer class="footer" style="margin-top: auto;">
+    <h2 class="footer-title">Síguenos en nuestras redes sociales</h2>
+    <p class="footer-text">
+      No te pierdas las últimas noticias y actualizaciones.
+    </p>
+
+    <div class="social-links">
+      <a href="https://www.instagram.com/gdgcochabamba" class="social-icon">
+        {
+          instagramLogo ? (
+            <img class="icon" src={instagramLogo} alt={logoAlt} />
+          ) : (
+            <span class="logo-text">Instagram</span>
+          )
+        }
+      </a>
+
+      <a href="https://www.youtube.com/@GDGCochabamba" class="social-icon">
+        {
+          youtubeLogo ? (
+            <img class="icon" src={youtubeLogo} alt="YouTube" />
+          ) : (
+            <span class="logo-text">YouTube</span>
+          )
+        }
+      </a>
+    </div>
+  </footer>
+</div>

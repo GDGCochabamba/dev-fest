@@ -4,13 +4,15 @@ import Header from "../components/Header.astro";
 
 // importa la imagen desde src/assets
 import logoDevfest from "../assets/Logo-Devfest2025.png";
-
+import logoInstagram from "../assets/instagramLogo.png";
+import logoYouTube from '../assets/youtubeLogo.png';
 import Welcome from "../components/Welcome.astro";
 import Register from "../components/Register.astro";
 import PhotoGallery from "../components/PhotoGallery.astro";
 import Info from "../components/Info.astro";
 import Speakers from "../components/Speakers.astro";
 import Sponsors from "../components/Sponsors.astro";
+import Footer from "../components/Footer.astro";
 ---
 
 <Layout>
@@ -24,4 +26,10 @@ import Sponsors from "../components/Sponsors.astro";
   <Info />
   <Speakers />
   <Sponsors />
+  <Footer
+    instagramLogoSrc={logoInstagram}
+    youtubeLogoSrc={logoYouTube}
+    logoAlt="icono"
+
+  />
 </Layout>
