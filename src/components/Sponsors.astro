@@ -1,7 +1,50 @@
-<section>
-    <div>
-        <a>
-            Sponsors
+---
+import Delve from "../assets/delve.png";
+import Ucatec from "../assets/ucatec.png";
+import Favorcito from "../assets/favorcito.png";
+import Meru from "../assets/meru.png";
+import '../styles/sponsors.css';
+---
+
+<section class="sponsors-section">
+  <div class="sponsors-header">
+    <h2 class="sponsors-title">Nuestros Sponsors</h2>
+    <span class="sponsors-description"
+      >Gracias a nuestros increíbles patrocinadores que hacen <br />posible el
+      DevFest Cochabamba 2025</span
+    >
+  </div>
+
+  <div class="sponsors-tier">
+    <h3 class="tier-title gold">Gold Sponsors</h3>
+    <div class="sponsors-grid">
+      <div class="sponsor-logo">
+        <a href="https://ucatec.edu.bo/">
+          <img src={Ucatec.src} alt="logo ucatec" />
         </a>
+      </div>
+      <div class="sponsor-logo">
+        <a href="https://delveedu.com/">
+          <img src={Delve.src} alt="logo delve" />
+        </a>
+      </div>
     </div>
+  </div>
+
+  <div class="sponsors-tier">
+    <h3 class="tier-title silver">Silver Sponsors</h3>
+    <div class="sponsors-grid">
+      <div class="sponsor-logo">
+        <a href="https://meru.com/">
+          <img src={Meru.src} alt="logo meru" />
+        </a>
+      </div>
+      <div class="sponsor-logo">
+        <a href="https://tufavorcito.com/bo">
+          <img src={Favorcito.src} alt="logo favorcito" />
+        </a>
+      </div>
+    </div>
+  </div>
 </section>
+
