@@ -1,7 +1,98 @@
-<section>
-    <div>
-        <a>
-            Speakers
-        </a>
-    </div>
+---
+import type { PopulatedParticipant } from "../lib/event";
+
+interface Props {
+  speakers: PopulatedParticipant[];
+}
+const { speakers } = Astro.props;
+---
+
+{speakers.length > 0 && (
+<section class="speakers" id="speakers">
+  <h2 class="speakers-title">Speakers</h2>
+  <div class="speakers-grid">
+    {speakers.map(({ participant, person }) => (
+      <div class="speaker-card">
+        <div class="speaker-photo">
+          {person.photoUrl ? (
+            <img src={person.photoUrl} alt={person.name} loading="lazy" />
+          ) : (
+            <div class="speaker-initial">{person.name.charAt(0)}</div>
+          )}
+        </div>
+        <div class="speaker-body">
+          <h3 class="speaker-name">{person.name}</h3>
+          {participant.talkTitle && <p class="speaker-talk">{participant.talkTitle}</p>}
+          {(participant.bioOverride ?? person.bio) && (
+            <p class="speaker-bio">{participant.bioOverride ?? person.bio}</p>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
 </section>
+)}
+
+<style>
+  .speakers {
+    padding: 3rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .speakers-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  .speakers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .speaker-card {
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+  }
+  .speaker-photo {
+    aspect-ratio: 1;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .speaker-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .speaker-initial {
+    font-size: 3rem;
+    color: #6b7280;
+    font-weight: 700;
+  }
+  .speaker-body {
+    padding: 1rem;
+    text-align: center;
+  }
+  .speaker-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: #111827;
+  }
+  .speaker-talk {
+    font-size: 0.875rem;
+    color: #4285f4;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+  }
+  .speaker-bio {
+    font-size: 0.8rem;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+</style>

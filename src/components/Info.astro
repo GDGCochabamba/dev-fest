@@ -1,7 +1,72 @@
-<section>
-    <div>
-        <a>
-            Info
-        </a>
-    </div>
+---
+interface Props {
+  date?: string;
+  venueName?: string;
+  venueAddress?: string;
+  city?: string;
+}
+const { date, venueName, venueAddress, city } = Astro.props;
+const hasData = Boolean(date || venueName);
+---
+
+{hasData && (
+<section class="info" id="detalles">
+  <h2>Detalles del evento</h2>
+  <div class="info-grid">
+    {date && (
+      <div class="info-card">
+        <div class="info-label">Fecha</div>
+        <div class="info-value">{date}</div>
+      </div>
+    )}
+    {venueName && (
+      <div class="info-card">
+        <div class="info-label">Lugar</div>
+        <div class="info-value">{venueName}</div>
+        {venueAddress && <div class="info-sub">{venueAddress}</div>}
+        {city && <div class="info-sub">{city}</div>}
+      </div>
+    )}
+  </div>
 </section>
+)}
+
+<style>
+  .info {
+    padding: 3rem 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .info h2 {
+    text-align: center;
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .info-card {
+    background: #f9fafb;
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  .info-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+  }
+  .info-value {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  .info-sub {
+    font-size: 0.9rem;
+    color: #4b5563;
+  }
+</style>

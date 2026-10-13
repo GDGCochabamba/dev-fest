@@ -11,6 +11,10 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
     "astro": "^5.15.4",
+    "firebase": "^12.14.0",
     "tailwindcss": "^4.1.17"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["sharp"]
   }
 }

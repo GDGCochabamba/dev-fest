@@ -1,11 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
-
-// importa la imagen desde src/assets
 import logoDevfest from "../assets/Logo-Devfest2025.png";
 import logoInstagram from "../assets/instagramLogo.png";
-import logoYouTube from '../assets/youtubeLogo.png';
+import logoYouTube from "../assets/youtubeLogo.png";
 import Welcome from "../components/Welcome.astro";
 import Register from "../components/Register.astro";
 import PhotoGallery from "../components/PhotoGallery.astro";
@@ -13,23 +11,51 @@ import Info from "../components/Info.astro";
 import Speakers from "../components/Speakers.astro";
 import Sponsors from "../components/Sponsors.astro";
 import Footer from "../components/Footer.astro";
+import {
+  formatEventDate,
+  getEventBySlug,
+  getEventSpeakers,
+  getEventSponsors,
+} from "../lib/event";
+
+const slug = import.meta.env.PUBLIC_EVENT_SLUG ?? "devfest-2025";
+const event = await getEventBySlug(slug);
+
+let speakers: Awaited<ReturnType<typeof getEventSpeakers>> = [];
+let sponsors: Awaited<ReturnType<typeof getEventSponsors>> = [];
+if (event) {
+  [speakers, sponsors] = await Promise.all([
+    getEventSpeakers(event.id),
+    getEventSponsors(event.id),
+  ]);
+}
+
+const eventTitle = event ? `${event.name} ${event.edition}` : "DevFest Cochabamba";
+const formattedDate = event ? formatEventDate(event) : undefined;
 ---
 
 <Layout>
-  <Header
-    logoSrc={logoDevfest}
-    logoAlt="DevFest Cochabamba 2025"
-  />
+  <Header logoSrc={logoDevfest} logoAlt={eventTitle} />
 
-  <Register />
+  <Welcome
+    name={eventTitle}
+    tagline={event?.tagline}
+    description={event?.description}
+    coverImageUrl={event?.coverImageUrl}
+  />
+  <Register registrationUrl={event?.registrationUrl} eventName={eventTitle} />
+  <Info
+    date={formattedDate}
+    venueName={event?.primaryVenue?.name}
+    venueAddress={event?.primaryVenue?.address}
+    city={event?.primaryVenue?.city}
+  />
   <PhotoGallery />
-  <Info />
-  <Speakers />
-  <Sponsors />
+  <Speakers speakers={speakers} />
+  <Sponsors sponsors={sponsors} />
   <Footer
     instagramLogoSrc={logoInstagram}
     youtubeLogoSrc={logoYouTube}
     logoAlt="icono"
-
   />
 </Layout>
