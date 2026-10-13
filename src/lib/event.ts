@@ -69,6 +69,7 @@ export interface PublicPerson {
   bio?: string;
   photoUrl?: string;
   socials: SocialLinks;
+  expertise: string[];
 }
 
 export interface PublicSponsor {
@@ -143,6 +144,7 @@ async function loadPeople(personIds: string[]): Promise<Map<string, PublicPerson
       bio: data.bio as string | undefined,
       photoUrl: data.photoUrl as string | undefined,
       socials: (data.socials as SocialLinks) ?? {},
+      expertise: (data.expertise as string[]) ?? [],
     });
   }
   return map;
