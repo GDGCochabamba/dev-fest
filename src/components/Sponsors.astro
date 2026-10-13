@@ -1,5 +1,5 @@
 ---
-import "../styles/sponsors.css";
+import { Image } from "astro:assets";
 import type { PublicSponsor } from "../lib/event";
 
 interface Props {
@@ -16,55 +16,151 @@ const TIER_LABELS: Record<PublicSponsor["tier"], string> = {
   media: "Media Partners",
 };
 const TIER_ORDER: PublicSponsor["tier"][] = ["platinum", "gold", "silver", "bronze", "community", "media"];
+const LARGE_TIERS = new Set<PublicSponsor["tier"]>(["platinum", "gold"]);
 
-const grouped = TIER_ORDER
-  .map((tier) => ({ tier, items: sponsors.filter((s) => s.tier === tier) }))
-  .filter((g) => g.items.length > 0);
+const grouped = TIER_ORDER.map((tier) => ({
+  tier,
+  items: sponsors.filter((s) => s.tier === tier),
+})).filter((g) => g.items.length > 0);
 ---
 
-{sponsors.length > 0 && (
-<section class="sponsors-section" id="sponsors">
-  <div class="sponsors-header">
-    <h2 class="sponsors-title">Nuestros Sponsors</h2>
-    <span class="sponsors-description">
-      Gracias a nuestros increíbles patrocinadores que hacen <br />posible el DevFest Cochabamba 2025
-    </span>
-  </div>
+{
+  sponsors.length > 0 && (
+    <section class="sponsors" id="sponsors">
+      <h2 class="df-section-title">Nuestros Sponsors</h2>
+      <p class="df-section-lead">
+        Gracias a nuestros increíbles patrocinadores que hacen posible el
+        DevFest Cochabamba 2025
+      </p>
 
-  {grouped.map(({ tier, items }) => (
-    <div class="sponsors-tier">
-      <h3 class={`tier-title ${tier}`}>{TIER_LABELS[tier]}</h3>
-      <div class="sponsors-grid">
-        {items.map((sponsor) => {
-          const inner = (
-            sponsor.logoUrl ? (
-              <img src={sponsor.logoUrl} alt={`logo ${sponsor.name}`} loading="lazy" />
-            ) : (
-              <span class="sponsor-name">{sponsor.name}</span>
-            )
-          );
-          return (
-            <div class="sponsor-logo">
-              {sponsor.url ? (
-                <a href={sponsor.url} target="_blank" rel="noopener noreferrer">{inner}</a>
-              ) : inner}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  ))}
-</section>
-)}
+      {grouped.map(({ tier, items }) => {
+        const large = LARGE_TIERS.has(tier);
+        return (
+          <div class="tier">
+            <h3 class:list={["tier-title", { large }]}>{TIER_LABELS[tier]}</h3>
+            <ul class="logos">
+              {items.map((sponsor) => {
+                const content = sponsor.logoUrl ? (
+                  <Image
+                    src={sponsor.logoUrl}
+                    alt={sponsor.name}
+                    inferSize
+                    class="logo"
+                  />
+                ) : (
+                  <span class="logo-name">{sponsor.name}</span>
+                );
+                return (
+                  <li class:list={["logo-card", { large }]}>
+                    {sponsor.url ? (
+                      <a href={sponsor.url} target="_blank" rel="noopener noreferrer">
+                        {content}
+                      </a>
+                    ) : (
+                      content
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        );
+      })}
+    </section>
+  )
+}
 
 <style>
-  .sponsor-name {
-    display: inline-flex;
+  .sponsors {
+    padding: 80px 24px;
+    background: var(--df-soft);
+  }
+
+  .tier {
+    max-width: 1248px;
+    margin: 40px auto 0;
+  }
+
+  .tier-title {
+    margin: 0;
+    color: var(--df-body);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    text-align: center;
+  }
+
+  .tier-title.large {
+    font-size: 20px;
+  }
+
+  .logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 32px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .logo-card {
+    display: flex;
+    width: 180px;
+    height: 66px;
+    box-sizing: border-box;
+    border: 1px solid var(--df-line);
+    background: #ffffff;
+  }
+
+  .logo-card.large {
+    width: 320px;
+    height: 100px;
+  }
+
+  .logo-card > a,
+  .logo-card > :global(.logo),
+  .logo-card > .logo-name {
+    flex: 1;
+  }
+
+  .logo-card a {
+    display: flex;
+  }
+
+  .logo-card :global(.logo) {
+    width: 100%;
+    height: 100%;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    object-fit: contain;
+  }
+
+  .logo-card.large :global(.logo) {
+    padding: 20px 24px;
+  }
+
+  .logo-name {
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 60px;
-    padding: 0 1rem;
-    color: #374151;
-    font-weight: 600;
+    color: var(--df-text);
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 700px) {
+    .sponsors {
+      padding: 56px 16px;
+    }
+
+    .logos {
+      gap: 16px;
+    }
+
+    .logo-card.large {
+      width: 100%;
+      max-width: 320px;
+    }
   }
 </style>

@@ -1,0 +1,170 @@
+---
+import Checklist from "./Checklist.astro";
+
+interface Props {
+  date: string;
+  upcoming: boolean;
+  cta?: { label: string; href: string };
+}
+const { date, upcoming, cta } = Astro.props;
+---
+
+<section id="inicio" class="hero">
+  <div class="hero-inner">
+    <h1 class="hero-title">
+      <img
+        src="/devfest/logo.svg"
+        alt="DevFest Cochabamba 2025"
+        width="510"
+        height="143"
+        class="hero-logo"
+      />
+    </h1>
+    <p class="hero-lead">
+      {
+        upcoming ? (
+          <>
+            Este <strong>{date}</strong> llega el evento tecnológico más
+            importante de la región, organizado por la comunidad Google Developer
+            Group Cochabamba.
+          </>
+        ) : (
+          <>
+            El <strong>{date}</strong> vivimos el evento tecnológico más
+            importante de la región, organizado por la comunidad Google Developer
+            Group Cochabamba.
+          </>
+        )
+      }
+    </p>
+
+    <div class="ticket-card">
+      <div class="ticket-body">
+        <div>
+          <h2 class="ticket-title">
+            {upcoming ? "¿Qué incluye tu entrada?" : "¿Qué incluía la entrada?"}
+          </h2>
+          <Checklist />
+        </div>
+        <img src="/devfest/ticket.svg" alt="" width="90" height="90" />
+      </div>
+      {upcoming && <p class="seats">Solo 250 cupos disponibles</p>}
+      {
+        cta && (
+          <a
+            href={cta.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="df-button ticket-cta"
+          >
+            {cta.label}
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  <img
+    src="/devfest/strip.svg"
+    alt=""
+    width="1440"
+    height="149"
+    class="hero-strip"
+  />
+</section>
+
+<style>
+  .hero {
+    background: #ffffff;
+  }
+
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 886px;
+    margin: 0 auto;
+    padding: 84px 24px 32px;
+  }
+
+  .hero-title {
+    margin: 0;
+  }
+
+  .hero-logo {
+    display: block;
+    width: min(510px, 100%);
+    height: auto;
+  }
+
+  .hero-lead {
+    margin: 48px 0 0;
+    color: var(--df-text);
+    font-size: clamp(18px, 2.4vw, 24px);
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .ticket-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: min(550px, 100%);
+    margin-top: 32px;
+    padding: 24px;
+    box-sizing: border-box;
+    border: 1px solid var(--df-sky-line);
+    background: var(--df-sky);
+  }
+
+  .ticket-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+  }
+
+  .ticket-title {
+    margin: 0 0 12px;
+    color: var(--df-ink);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+  }
+
+  .seats {
+    width: 100%;
+    margin: 0;
+    padding: 8px 16px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: var(--df-alert);
+    color: #000000;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .ticket-cta {
+    min-width: 224px;
+    margin-top: 4px;
+  }
+
+  .hero-strip {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (max-width: 520px) {
+    .hero-inner {
+      padding-top: 48px;
+    }
+
+    .ticket-body img {
+      width: 64px;
+      height: 64px;
+    }
+  }
+</style>

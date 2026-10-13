@@ -1,15 +1,8 @@
 ---
 interface Props {
-  // puede ser string ("/assets/logo.png") o un objeto importado desde src/assets
-  logoSrc?: any;
-  logoAlt?: string;
+  cta?: { label: string; href: string };
 }
-
-const { logoSrc, logoAlt = "Logo" } = Astro.props;
-
-// si es string, úsalo tal cual; si es objeto, usa .src
-const resolvedLogoSrc =
-  typeof logoSrc === "string" ? logoSrc : logoSrc?.src ?? undefined;
+const { cta } = Astro.props;
 
 const navItems = [
   { label: "Inicio", href: "#inicio" },
@@ -21,121 +14,105 @@ const navItems = [
 ---
 
 <header class="nav-bar">
-  <div class="nav-inner">
-    <!-- Logo -->
+  <nav class="nav-inner" aria-label="Principal">
     <a href="#inicio" class="logo-link">
-      {resolvedLogoSrc ? (
-        <img src={resolvedLogoSrc} alt={logoAlt} />
-      ) : (
-        <span class="logo-text">DevFest Cochabamba 2025</span>
-      )}
+      <img
+        src="/devfest/logo-small.svg"
+        alt="DevFest Cochabamba 2025"
+        width="143"
+        height="40"
+      />
     </a>
 
-    <!-- Menú -->
-    <nav class="nav-menu">
-      {navItems.map((item) => (
-        <a href={item.href} class="nav-link">
-          {item.label}
-        </a>
-      ))}
-    </nav>
-
-    <!-- Botón -->
-    <a href="#registro" class="cta-button">
-      Inscríbete
-    </a>
-  </div>
+    <div class="nav-right">
+      <ul class="nav-menu">
+        {
+          navItems.map((item) => (
+            <li>
+              <a href={item.href} class="nav-link">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      {
+        cta && (
+          <a
+            href={cta.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="df-button nav-cta"
+          >
+            {cta.label}
+          </a>
+        )
+      }
+    </div>
+  </nav>
 </header>
 
 <style>
   .nav-bar {
-    background-color: #ffffff;
-    border-bottom: 1px solid #f3f4f6;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     position: sticky;
     top: 0;
     z-index: 10;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.16);
   }
 
   .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0.75rem 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 24px;
+    max-width: 1440px;
+    height: 64px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
   }
 
   .logo-link {
     display: flex;
+    flex-shrink: 0;
+  }
+
+  .nav-right {
+    display: flex;
     align-items: center;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .logo-link img {
-    height: 36px;
-    width: auto;
-    display: block;
-  }
-
-  .logo-text {
-    font-weight: 600;
-    font-size: 1rem;
+    gap: 48px;
   }
 
   .nav-menu {
     display: flex;
-    gap: 2rem;
-    margin-left: auto;
-    margin-right: 2rem;
+    gap: 48px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .nav-link {
-    font-size: 0.95rem;
-    color: #111827;
+    color: #000000;
+    font-size: 16px;
+    line-height: 24px;
     text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .nav-link:nth-child(1) {
-    color: #111827;
+    transition: color 150ms ease;
   }
 
   .nav-link:hover {
-    color: #4285f4;
+    color: var(--df-blue);
   }
 
-  .cta-button {
-    padding: 0.6rem 1.3rem;
-    border-radius: 10px;
-    background-color: #4285f4;
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 600;
+  .nav-cta {
+    padding: 8px 24px;
+    font-size: 16px;
     white-space: nowrap;
-    transition: background-color 0.2s ease, transform 0.1s ease;
   }
 
-  .cta-button:hover {
-    background-color: #4285f4;
-    transform: translateY(-1px);
-  }
-
-  @media (max-width: 768px) {
-    .nav-inner {
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
+  @media (max-width: 900px) {
     .nav-menu {
-      margin: 0;
-      gap: 1rem;
-    }
-
-    .cta-button {
-      margin-top: 0.5rem;
+      display: none;
     }
   }
 </style>

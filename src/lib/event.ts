@@ -70,6 +70,8 @@ export interface PublicPerson {
   photoUrl?: string;
   socials: SocialLinks;
   expertise: string[];
+  /** ISO 3166 alpha-2, e.g. "BO". */
+  country?: string;
 }
 
 export interface PublicSponsor {
@@ -145,17 +147,21 @@ async function loadPeople(personIds: string[]): Promise<Map<string, PublicPerson
       photoUrl: data.photoUrl as string | undefined,
       socials: (data.socials as SocialLinks) ?? {},
       expertise: (data.expertise as string[]) ?? [],
+      country: data.country as string | undefined,
     });
   }
   return map;
 }
 
-export async function getEventSpeakers(eventId: string): Promise<PopulatedParticipant[]> {
+async function getEventParticipants(
+  eventId: string,
+  types: PublicParticipant["type"][],
+): Promise<PopulatedParticipant[]> {
   const db = getDb();
   const partSnap = await getDocs(
     query(
       collection(db, "events", eventId, "participants"),
-      where("type", "in", ["speaker", "mentor", "panelist"]),
+      where("type", "in", types),
       orderBy("order", "asc"),
     ),
   );
@@ -181,6 +187,12 @@ export async function getEventSpeakers(eventId: string): Promise<PopulatedPartic
     .filter((x): x is PopulatedParticipant => x !== null);
 }
 
+export const getEventSpeakers = (eventId: string) =>
+  getEventParticipants(eventId, ["speaker", "mentor", "panelist"]);
+
+export const getEventTeam = (eventId: string) =>
+  getEventParticipants(eventId, ["lead", "organizer"]);
+
 export async function getEventSponsors(eventId: string): Promise<PublicSponsor[]> {
   const db = getDb();
   const snap = await getDocs(
@@ -199,14 +211,28 @@ export async function getEventSponsors(eventId: string): Promise<PublicSponsor[]
   });
 }
 
+const TZ = "America/La_Paz";
+
 const SHORT_DATE = new Intl.DateTimeFormat("es-BO", {
   day: "numeric",
   month: "long",
   year: "numeric",
+  timeZone: TZ,
+});
+
+const DAY_MONTH = new Intl.DateTimeFormat("es-BO", {
+  day: "numeric",
+  month: "long",
+  timeZone: TZ,
 });
 
 export function formatEventDate(e: PublicEvent): string {
-  const sameDay = e.startDate.toDateString() === e.endDate.toDateString();
+  const sameDay = SHORT_DATE.format(e.startDate) === SHORT_DATE.format(e.endDate);
   if (sameDay) return SHORT_DATE.format(e.startDate);
   return `${SHORT_DATE.format(e.startDate)} – ${SHORT_DATE.format(e.endDate)}`;
 }
+
+/** "22 de noviembre", in Bolivia time. */
+export const formatDayMonth = (e: PublicEvent) => DAY_MONTH.format(e.startDate);
+
+export const isUpcoming = (e: PublicEvent) => e.endDate.getTime() > Date.now();
