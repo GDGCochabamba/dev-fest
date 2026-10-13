@@ -1,0 +1,47 @@
+---
+// What the DevFest 2025 ticket included, as listed in the design.
+const PERKS = ["Acceso a todas las charlas", "Almuerzo", "Swag sorpresa del evento"];
+---
+
+<ul class="checklist">
+  {
+    PERKS.map((perk) => (
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+        {perk}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .checklist {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--df-body);
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--df-blue);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.5;
+  }
+</style>

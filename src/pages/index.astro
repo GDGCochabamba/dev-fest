@@ -1,35 +1,66 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
-
-// importa la imagen desde src/assets
-import logoDevfest from "../assets/Logo-Devfest2025.png";
-import logoInstagram from "../assets/instagramLogo.png";
-import logoYouTube from '../assets/youtubeLogo.png';
-import Welcome from "../components/Welcome.astro";
-import Register from "../components/Register.astro";
-import PhotoGallery from "../components/PhotoGallery.astro";
+import Hero from "../components/Hero.astro";
+import Gallery from "../components/Gallery.astro";
 import Info from "../components/Info.astro";
 import Speakers from "../components/Speakers.astro";
+import Team from "../components/Team.astro";
 import Sponsors from "../components/Sponsors.astro";
 import Footer from "../components/Footer.astro";
+import {
+  formatDayMonth,
+  getEventBySlug,
+  getEventSpeakers,
+  getEventSponsors,
+  getEventTeam,
+  isUpcoming,
+} from "../lib/event";
+
+const slug = import.meta.env.PUBLIC_EVENT_SLUG ?? "devfest-2025";
+const event = await getEventBySlug(slug);
+
+let speakers: Awaited<ReturnType<typeof getEventSpeakers>> = [];
+let team: Awaited<ReturnType<typeof getEventTeam>> = [];
+let sponsors: Awaited<ReturnType<typeof getEventSponsors>> = [];
+if (event) {
+  [speakers, team, sponsors] = await Promise.all([
+    getEventSpeakers(event.id),
+    getEventTeam(event.id),
+    getEventSponsors(event.id),
+  ]);
+}
+
+const upcoming = event ? isUpcoming(event) : false;
+// Before the event the main action is registering; afterwards, its page on gdg.community.dev.
+const cta =
+  event && upcoming && event.registrationUrl
+    ? { label: "Inscríbete aquí", href: event.registrationUrl }
+    : event?.externalUrl
+      ? { label: "Ver detalle del evento", href: event.externalUrl }
+      : undefined;
+const headerCta = cta && {
+  ...cta,
+  label: upcoming ? "Inscríbete" : "Ver detalle",
+};
 ---
 
-<Layout>
-  <Header
-    logoSrc={logoDevfest}
-    logoAlt="DevFest Cochabamba 2025"
-  />
-
-  <Register />
-  <PhotoGallery />
-  <Info />
-  <Speakers />
-  <Sponsors />
-  <Footer
-    instagramLogoSrc={logoInstagram}
-    youtubeLogoSrc={logoYouTube}
-    logoAlt="icono"
-
-  />
+<Layout
+  title={event ? `${event.name} ${event.edition}` : undefined}
+  description={event?.description}
+>
+  <Header cta={headerCta} />
+  <main>
+    <Hero
+      date={event ? formatDayMonth(event) : "22 de noviembre"}
+      upcoming={upcoming}
+      cta={cta}
+    />
+    <Gallery />
+    <Info upcoming={upcoming} cta={cta} />
+    <Speakers speakers={speakers} />
+    <Team team={team} />
+    <Sponsors sponsors={sponsors} />
+  </main>
+  <Footer />
 </Layout>

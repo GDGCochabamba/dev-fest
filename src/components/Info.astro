@@ -1,7 +1,158 @@
-<section>
-    <div>
-        <a>
-            Info
-        </a>
+---
+import Checklist from "./Checklist.astro";
+
+interface Props {
+  upcoming: boolean;
+  cta?: { label: string; href: string };
+}
+const { upcoming, cta } = Astro.props;
+
+const features = [
+  {
+    title: "Descubre las últimas tecnologías",
+    text: "Explora y descubre las últimas herramientas, tendencias y novedades en tecnologías web, mobile, cloud, AI y ML.",
+    icon: "M8.2 16.4 3.8 12l4.4-4.4 1.4 1.4L6.6 12l2.9 2.9-1.3 1.5Zm7.6 0-1.4-1.5L17.3 12l-2.9-2.9 1.4-1.5L20.2 12l-4.4 4.4Z",
+  },
+  {
+    title: "Haz networking",
+    text: "Conecta con programadores, líderes de la industria y expertos en tecnología nacionales e internacionales.",
+    icon: "M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-7 8a7 7 0 0 1 14 0v1H5Z",
+  },
+];
+---
+
+<section id="detalles" class="info">
+  <div class="container">
+    <p class="headline">
+      DevFest Cochabamba ofrece una experiencia inmersiva llena de aprendizaje,
+      innovación y comunidad.
+    </p>
+
+    <ul class="features">
+      {
+        features.map((feature) => (
+          <li class="card feature">
+            <span class="icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d={feature.icon} />
+              </svg>
+            </span>
+            <h3>{feature.title}</h3>
+            <p>{feature.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="card checklist">
+      <h3>{upcoming ? "Tu entrada incluye:" : "La entrada incluía:"}</h3>
+      <Checklist />
+      {
+        cta && (
+          <a
+            href={cta.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="df-button cta"
+          >
+            {cta.label}
+          </a>
+        )
+      }
     </div>
+  </div>
 </section>
+
+<style>
+  .info {
+    padding: 80px 24px;
+    background: var(--df-soft);
+  }
+
+  .container {
+    max-width: 824px;
+    margin: 0 auto;
+  }
+
+  .headline {
+    max-width: 680px;
+    margin: 0 auto 48px;
+    color: var(--df-text);
+    font-size: clamp(18px, 2.4vw, 24px);
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card {
+    padding: 24px;
+    background: #ffffff;
+    box-shadow: var(--df-shadow);
+  }
+
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--df-yellow);
+  }
+
+  .icon svg {
+    width: 24px;
+    height: 24px;
+    fill: #ffffff;
+  }
+
+  h3 {
+    margin: 16px 0 8px;
+    color: var(--df-ink);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+  }
+
+  .feature p {
+    margin: 0;
+    color: var(--df-muted);
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .checklist {
+    width: min(386px, 100%);
+    margin: 48px auto 0;
+    box-sizing: border-box;
+    border-radius: 14px;
+  }
+
+  .checklist h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+
+  .cta {
+    width: 100%;
+    margin-top: 16px;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 700px) {
+    .info {
+      padding: 56px 16px;
+    }
+
+    .features {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,47 +1,65 @@
 ---
-import '../styles/footer.css';
-interface Props {
-  instagramLogoSrc?: any;
-  logoAlt?: string;
-  youtubeLogoSrc?: any;
-}
+import { Image } from "astro:assets";
+import instagramLogo from "../assets/instagramLogo.png";
+import youtubeLogo from "../assets/youtubeLogo.png";
 
-const { instagramLogoSrc, logoAlt = "Logo", youtubeLogoSrc } = Astro.props;
-
-const resolveImg = (img: any) =>
-  typeof img === "string" ? img : (img?.src ?? undefined);
-
-const instagramLogo = resolveImg(instagramLogoSrc);
-const youtubeLogo = resolveImg(youtubeLogoSrc);
+const socials = [
+  { label: "Instagram", href: "https://www.instagram.com/gdgcochabamba", icon: instagramLogo, size: 44 },
+  { label: "YouTube", href: "https://www.youtube.com/@GDGCochabamba", icon: youtubeLogo, size: 52 },
+];
 ---
 
-<div>
-  <footer class="footer" style="margin-top: auto;">
-    <h2 class="footer-title">Síguenos en nuestras redes sociales</h2>
-    <p class="footer-text">
-      No te pierdas las últimas noticias y actualizaciones.
-    </p>
+<footer class="footer">
+  <h2 class="df-section-title">Síguenos en nuestras redes sociales</h2>
+  <p class="df-section-lead">No te pierdas las últimas noticias y actualizaciones.</p>
 
-    <div class="social-links">
-      <a href="https://www.instagram.com/gdgcochabamba" class="social-icon">
-        {
-          instagramLogo ? (
-            <img class="icon" src={instagramLogo} alt={logoAlt} />
-          ) : (
-            <span class="logo-text">Instagram</span>
-          )
-        }
-      </a>
+  <ul class="social-links">
+    {
+      socials.map((social) => (
+        <li>
+          <a
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={social.label}
+          >
+            <Image src={social.icon} alt="" width={social.size} height={social.size} />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</footer>
 
-      <a href="https://www.youtube.com/@GDGCochabamba" class="social-icon">
-        {
-          youtubeLogo ? (
-            <img class="icon" src={youtubeLogo} alt="YouTube" />
-          ) : (
-            <span class="logo-text">YouTube</span>
-          )
-        }
-      </a>
-    </div>
-  </footer>
-</div>
+<style>
+  .footer {
+    padding: 72px 24px 80px;
+    background: #ffffff;
+  }
+
+  .social-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .social-links a {
+    display: flex;
+    border-radius: 12px;
+    transition: transform 150ms ease;
+  }
+
+  .social-links a:hover {
+    transform: scale(1.08);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .social-links a {
+      transition: none;
+    }
+  }
+</style>

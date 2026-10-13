@@ -1,7 +1,197 @@
-<section>
-    <div>
-        <a>
-            Speakers
-        </a>
-    </div>
-</section>
+---
+import { Image } from "astro:assets";
+import type { PopulatedParticipant } from "../lib/event";
+
+interface Props {
+  speakers: PopulatedParticipant[];
+}
+const { speakers } = Astro.props;
+
+const FLAGS: Record<string, string> = {
+  BO: "Bolivia",
+  CO: "Colombia",
+};
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+---
+
+{
+  speakers.length > 0 && (
+    <section class="speakers" id="speakers">
+      <h2 class="df-section-title">Conoce a los speakers</h2>
+      <p class="df-section-lead">
+        Aprende de expertos en la industria y líderes en tecnología
+      </p>
+
+      <ul class="grid">
+        {speakers.map(({ participant, person }) => {
+          const country = person.country && FLAGS[person.country] ? person.country : undefined;
+          return (
+            <li class="card">
+              <div class="avatar">
+                {person.photoUrl ? (
+                  <Image
+                    src={person.photoUrl}
+                    alt={person.name}
+                    width={128}
+                    height={128}
+                    densities={[1, 2]}
+                    class="photo"
+                  />
+                ) : (
+                  <span class="photo initials" aria-hidden="true">
+                    {initials(person.name)}
+                  </span>
+                )}
+                {country && (
+                  <img
+                    src={`/devfest/flags/${country.toLowerCase()}.png`}
+                    alt={`Bandera de ${FLAGS[country]}`}
+                    width="34"
+                    height="34"
+                    class="flag"
+                  />
+                )}
+              </div>
+              <h3 class="name">{person.name}</h3>
+              {participant.role && <p class="role">{participant.role}</p>}
+              {participant.talkTitle && (
+                <div class="talk">
+                  <span class="badge">Charla</span>
+                  <p>{participant.talkTitle}</p>
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .speakers {
+    padding: 80px 24px;
+    background: #ffffff;
+  }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 32px;
+    max-width: 1376px;
+    margin: 48px auto 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    padding: 16px;
+    box-sizing: border-box;
+    border: 1px solid var(--df-line);
+    background: #ffffff;
+  }
+
+  .avatar {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    margin: 16px auto 8px;
+  }
+
+  .avatar :global(.photo) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .initials {
+    background: var(--df-blue);
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: 700;
+  }
+
+  .flag {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 34px;
+    height: 34px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .name {
+    margin: 8px 0 0;
+    color: var(--df-text);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+    text-align: center;
+  }
+
+  .role {
+    margin: 4px 0 0;
+    color: var(--df-muted);
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+  }
+
+  .talk {
+    margin-top: 16px;
+    padding: 16px 24px;
+    border-radius: 16px;
+    background: var(--df-soft);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 38px;
+    background: #e0e0e0;
+    color: var(--df-text);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+
+  .talk p {
+    margin: 8px 0 0;
+    color: var(--df-ink);
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  @media (max-width: 700px) {
+    .speakers {
+      padding: 56px 16px;
+    }
+
+    .grid {
+      gap: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 360px;
+    }
+  }
+</style>

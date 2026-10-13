@@ -1,0 +1,104 @@
+---
+import { Image } from "astro:assets";
+import type { PopulatedParticipant } from "../lib/event";
+
+interface Props {
+  team: PopulatedParticipant[];
+}
+const { team } = Astro.props;
+
+const COLORS = ["var(--df-blue)", "var(--df-red)", "var(--df-yellow)", "var(--df-green)"];
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+---
+
+{
+  team.length > 0 && (
+    <section class="team" id="equipo">
+      <h2 class="df-section-title">Equipo organizador</h2>
+      <p class="df-section-lead">
+        La comunidad de GDG Cochabamba que hace posible el DevFest
+      </p>
+
+      <ul class="grid">
+        {team.map(({ person }, i) => (
+          <li class="member">
+            {person.photoUrl ? (
+              <Image
+                src={person.photoUrl}
+                alt=""
+                width={72}
+                height={72}
+                densities={[1, 2]}
+                class="photo"
+              />
+            ) : (
+              <span
+                class="photo initials"
+                style={`background: ${COLORS[i % COLORS.length]}`}
+                aria-hidden="true"
+              >
+                {initials(person.name)}
+              </span>
+            )}
+            <span class="name">{person.name}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .team {
+    padding: 80px 24px;
+    border-top: 1px solid var(--df-line);
+    background: #ffffff;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 32px 24px;
+    max-width: 1248px;
+    margin: 48px auto 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .member :global(.photo) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .initials {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .name {
+    color: var(--df-body);
+    font-size: 15px;
+    line-height: 1.3;
+  }
+</style>
